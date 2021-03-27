@@ -29,7 +29,6 @@
 // const cards = document.querySelector('cardcontainer')
 // const template = document.getElementById('template').content
 // const fragment = document.createDocumentFragment()
-// const oroTotal = 0
 // const farmBtn = document.getElementById('farm-btn')
 // const divActividades = document.getElementById('actividades')
 // // const fechaAhora = Date.now()
@@ -39,33 +38,6 @@
 
 // let actividades = {}
 
-
-// // var hammerFarm = new Hammer(farm);
-// // hammerFarm.on('pan swipe', function (ev) {
-// //     console.log('hay pan');
-// //     setActividad(ev)
-// // });
-
-// function getRandomFarm() { return Math.floor(Math.random() * 10) + 10 }
-// console.log(getRandomFarm())
-
-// function getRandomCave() { return Math.floor(Math.random() * 10) + 2 }
-
-// farmBtn.addEventListener('click', e => {
-//     setActividad(e)
-// })
-
-// const setActividad = (e) => {
-
-//     actividad = {
-//         id: Date.now(),
-//         oro: getRandomFarm(),
-//         fecha: hoy
-//     }
-//     actividades[actividad.id] = actividad
-//     setTotal(actividad.oro)
-//     imprimirActividades()
-// }
 
 
 document.addEventListener('deviceready', onDeviceReady, false);
@@ -79,6 +51,8 @@ function onDeviceReady() {
 function random(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
 }
+
+const oroTotal = 0
 
 // GRANJA
 $(function () {
@@ -96,13 +70,15 @@ $(function () {
 
         var oroFarm = random(10, 20);
         $('#actividades').append(" * Recolectaste " + oroFarm + " monedas desde Farm! <br>");
-        $('#cantidad-gold').val(oroFarm);
 
+        oroTotal = oroFarm
+        $('span').textContent = oroTotal
     });
+
 
 })
 
-// HOUSE
+// CAVE
 $(function () {
     var cave = document.getElementById('cave-card')
 
@@ -117,8 +93,11 @@ $(function () {
         var oroCave = random(2, 10)
         $('#actividades').append('* Recolectaste ' + oroCave + ' monedas desde Cave! <br>')
         $('#cantidad-gold').val(oroCave)
+        oroTotal += oroCave
+        $('span').textContent = oroTotal
     })
 })
+// HOUSE
 $(function () {
     var house = document.getElementById('house-card')
 
@@ -133,9 +112,11 @@ $(function () {
         var oroHouse = random(2, 5)
         $('#actividades').append('* Recolectaste ' + oroHouse + ' monedas desde House! <br>')
         $('#cantidad-gold').val(oroHouse)
+        oroTotal += oroHouse
+        $('span').textContent = oroTotal
     })
 })
-
+// CASINO
 $(function () {
     var casino = document.getElementById('casino-card')
 
@@ -147,39 +128,26 @@ $(function () {
         ]
     })
     hammerCasino.on('swipe', function (e) {
+        const index = [0, 1, -1]
         var oroCasino = random(0, 50)
 
+
+
+        oroCasino = oroCasino * index[(Math.floor(Math.random() * 2) + 1)]
+
         if (oroCasino > 0) {
-            $('actividades').append('* Recolectaste ' + oroCasino + ' monedas desde Casino <br>')
-            $('cantidad-gold').val(oroCasino)
+            $('#actividades').append('* Recolectaste ' + oroCasino + ' monedas desde Casino <br>')
+            return
+        } else if (oroCasino < 0) {
+            $('#actividades').append('* Perdiste ' + oroCasino + ' monedas desde Casino <br>')
+            return
+        } else if (oroCasino == 0) {
+            $('#actividades').append('* El casino hoy no pagó <br>')
+            return
         }
-        if (oroCasino < 0) {
-            $('actividades').append('* Perdiste ' + oroCasino + ' monedas desde Casino <br>')
-            $('cantidad-gold').val(oroCasino)
-        }
-        if (oroCasino == 0) {
-            $('actividades').append('* El casino hoy no pagó <br>')
-            $('cantidad-gold').val(oroCasino)
-        }
+        oroTotal += oroCasino
+        $('span').textContent = oroTotal
     })
 })
 
-
-function imprimirActividades() {
-    //vacio el divActividades
-    divActividades.innerHTML = ''
-    //instancio el texto que aparecerá en actividades
-    let texto = ''
-    // Object.values(actividades).forEach(actividad => {
-    //     let clone = template.cloneNode(true);
-    //     if (actividad.oro > 0) {
-    //         texto = 'Earns ' + actividad.oro + ' from the farm ' + hoy
-    //     }
-    //     clone.querySelector('p').textContent = texto
-    //     console.log(texto)
-
-    //     fragment.appendChild(clone)
-    // })
-    divActividades.appendChild(fragment)
-
-}
+console.log(oroTotal)
